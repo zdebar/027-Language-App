@@ -34,20 +34,6 @@ Development and user testing of the web version provided insights into what work
 
 ---
 
-## Prerequisites
-
-To run the app, you need the following:
-
-- **Expo**
-- **React Native**
-- **Native Wind**
-- **expo-sqlite**
-- **expo-audio**
-- **expo-file-system**
-- **uid**
-
----
-
 ## Database
 
 ### Database Structure
