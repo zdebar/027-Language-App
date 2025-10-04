@@ -53,13 +53,20 @@ CREATE TABLE IF NOT EXISTS user_score (
   PRIMARY KEY (user_id, "date")
 );
 
--- Trigger to update updated_at on user_items when progress is updated
+-- Trigger to update updated_at on user_items and manage user_score
 CREATE TRIGGER update_user_items_updated_at
 AFTER UPDATE ON user_items
 BEGIN
+  -- Update the updated_at column
   UPDATE user_items
   SET updated_at = CURRENT_TIMESTAMP
   WHERE user_id = NEW.user_id AND item_id = NEW.item_id;
+
+  -- Insert or update the user_score table
+  INSERT INTO user_score (user_id, "date", item_count)
+  VALUES (NEW.user_id, DATE('now'), 1)
+  ON CONFLICT(user_id, "date") DO UPDATE SET
+    item_count = item_count + 1;
 END;
 
 
