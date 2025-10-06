@@ -29,12 +29,14 @@ export async function loginUserRepository(
   username: string
 ): Promise<{ userInfo: UserInfo; password: string } | null> {
   const result = await db.getFirstAsync<{
+    id: number;
     uid: string;
     username: string;
     password: string;
   }>(
     `
     SELECT 
+      id,
       uid,
       username,
       password
@@ -50,6 +52,7 @@ export async function loginUserRepository(
 
   return {
     userInfo: {
+      id: result.id,
       uid: result.uid,
       username: result.username,
     },
@@ -59,37 +62,33 @@ export async function loginUserRepository(
 
 export async function getUserScoreRepository(
   db: SQLite.SQLiteDatabase,
-  uid: string
+  id: number
 ): Promise<UserScore> {
-  const result = await db.getFirstAsync<{
-    learnedCountToday: number;
-    learnedCountNotToday: number;
-    practiceCountToday: number;
-  }>(
+  const result = await db.getFirstAsync<UserScore>(
     `
     SELECT 
       -- Count of items learned today
       (SELECT COUNT(*) 
       FROM user_items 
-      WHERE user_id = u.id 
+      WHERE user_id = $1 
         AND DATE(learned_at) = DATE('now', 'localtime')) AS learnedCountToday,
 
       -- Count of items learned before today
       (SELECT COUNT(*) 
       FROM user_items 
-      WHERE user_id = u.id 
+      WHERE user_id = $1 
         AND learned_at IS NOT NULL 
         AND DATE(learned_at) < DATE('now', 'localtime')) AS learnedCountNotToday,
 
       -- Practice count for today from user_score
       (SELECT item_count 
       FROM user_score 
-      WHERE user_id = u.id 
+      WHERE user_id = $1 
         AND "date" = DATE('now', 'localtime')) AS practiceCountToday
-    FROM users u
-    WHERE u.uid = $1;
+    FROM user_items ui
+    WHERE ui.user_id = $1;
     `,
-    [uid]
+    [id]
   );
 
   return {

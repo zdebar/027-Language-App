@@ -2,8 +2,8 @@ import practiceConstants from "@/constants/practice";
 import { Grammar, Item, UserScore } from "@/types/data.types";
 import * as SQLite from "expo-sqlite";
 
-import { getGrammarRepository } from "@/scripts/repositories/grammar.repository";
 import {
+  getGrammarRepository,
   getPracticeItemRepository,
   updateUserItemRepository,
 } from "@/scripts/repositories/practice.repository";
@@ -12,16 +12,16 @@ import {
   addOpusSuffix,
   getNextAt,
   getThresholdDate,
-} from "../utils/items.utils";
+} from "@/scripts/utils/items.utils";
 
 /**
  * Gets deck of practices items.
  */
-export async function getPracticeItem(
+export async function getPracticeItemService(
   db: SQLite.SQLiteDatabase,
-  uid: string
+  id: number
 ): Promise<Item | null> {
-  const item: Item | null = await getPracticeItemRepository(db, uid);
+  const item: Item | null = await getPracticeItemRepository(db, id);
 
   if (item) {
     item.audio = addOpusSuffix(item.audio);
@@ -33,14 +33,14 @@ export async function getPracticeItem(
 /**
  * Updates the user's word progress in the PostgreSQL database and returns the updated score.
  */
-export async function updateUserItem(
+export async function updateUserItemService(
   db: SQLite.SQLiteDatabase,
-  uid: string,
+  id: number,
   item: Item
 ): Promise<UserScore> {
   await updateUserItemRepository(
     db,
-    uid,
+    id,
     item.id,
     item.progress,
     getNextAt(item.progress),
@@ -48,13 +48,13 @@ export async function updateUserItem(
     getThresholdDate(item.progress, practiceConstants.SRS.length)
   );
 
-  return await getUserScoreRepository(db, uid);
+  return await getUserScoreRepository(db, id);
 }
 
 /**
  * Gets ItemInfo for given item ID from the database.
  */
-export async function getGrammar(
+export async function getGrammarService(
   db: SQLite.SQLiteDatabase,
   itemId: number
 ): Promise<Grammar> {

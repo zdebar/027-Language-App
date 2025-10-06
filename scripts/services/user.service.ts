@@ -1,15 +1,14 @@
+import { isPasswordValid } from "@/scripts/utils/crypto.utils";
 import { UserInfo, UserScore } from "@/types/data.types";
 import * as Crypto from "expo-crypto";
 import * as SQLite from "expo-sqlite";
 import { v4 as uuidv4 } from "uuid";
-import { isPasswordValid } from "../utils/crypto.utils";
 
 import {
   createUserRepository,
   getUserScoreRepository,
   loginUserRepository,
 } from "@/scripts/repositories/user.repository";
-import { resetUserRepository } from "../repositories/reset.repository";
 
 export async function createUserService(
   db: SQLite.SQLiteDatabase,
@@ -17,17 +16,20 @@ export async function createUserService(
   password: string
 ): Promise<{ userInfo: UserInfo; userScore: UserScore }> {
   const uid: string = uuidv4();
+
   const hashedPassword = await Crypto.digestStringAsync(
     Crypto.CryptoDigestAlgorithm.SHA256,
     password
   );
+
   const userInfo: UserInfo = await createUserRepository(
     db,
     uid,
     username,
     hashedPassword
   );
-  const userScore = await getUserScoreRepository(db, uid);
+
+  const userScore = await getUserScoreRepository(db, userInfo.id);
   return { userInfo, userScore };
 }
 
@@ -52,15 +54,4 @@ export async function loginUserService(
   }
 
   return user.userInfo;
-}
-
-/**
- * Erase all items connnected to given user and language from user_items table. Returns the updated score.
- */
-export async function resetUserService(
-  db: SQLite.SQLiteDatabase,
-  uid: string
-): Promise<UserScore> {
-  await resetUserRepository(db, uid);
-  return await getUserScoreRepository(db, uid);
 }
