@@ -1,9 +1,12 @@
 import { Grammar, Item } from "@/types/data.types";
 import * as SQLite from "expo-sqlite";
 
+/**
+ * Gets a list of items started by the user.
+ */
 export async function getUserItemsListRepository(
   db: SQLite.SQLiteDatabase,
-  id: number
+  userId: number
 ): Promise<Item[]> {
   return await db.getAllAsync<Item>(
     `
@@ -22,13 +25,16 @@ export async function getUserItemsListRepository(
       AND b.grammar_id IS NULL
     ORDER BY i.czech ASC
     `,
-    [id]
+    [userId]
   );
 }
 
+/**
+ * Gets a list of grammar topics from items started by the user.
+ */
 export async function getGrammarListRepository(
   db: SQLite.SQLiteDatabase,
-  id: number
+  userId: number
 ): Promise<Grammar[]> {
   return await db.getAllAsync<Grammar>(
     `
@@ -44,13 +50,16 @@ export async function getGrammarListRepository(
     GROUP BY g.id, g.name, g.note
     ORDER BY g.id ASC
     `,
-    [id]
+    [userId]
   );
 }
 
+/**
+ * Resets user_items.progress to 0 for given user_id and item_id.
+ */
 export async function resetItemRepository(
   db: SQLite.SQLiteDatabase,
-  id: number,
+  userId: number,
   itemId: number
 ): Promise<void> {
   await db.runAsync(
@@ -60,13 +69,16 @@ export async function resetItemRepository(
     WHERE user_id = $1
       AND item_id = $2;
     `,
-    [id, itemId]
+    [userId, itemId]
   );
 }
 
+/**
+ * Resets all user_items.progress to 0 for given user_id and all items linked to given grammar_id.
+ */
 export async function resetGrammarItemsRepository(
   db: SQLite.SQLiteDatabase,
-  id: number,
+  userId: number,
   grammarId: number
 ): Promise<void> {
   await db.runAsync(
@@ -80,13 +92,16 @@ export async function resetGrammarItemsRepository(
       AND u.uid = $1
       AND b.grammar_id = $2;
     `,
-    [id, grammarId]
+    [userId, grammarId]
   );
 }
 
+/**
+ * Resets all user_items.progress to 0 for given user_id.
+ */
 export async function resetUserRepository(
   db: SQLite.SQLiteDatabase,
-  id: number
+  userId: number
 ): Promise<void> {
   await db.runAsync(
     `
@@ -94,6 +109,6 @@ export async function resetUserRepository(
     SET progress = 0
     WHERE user_id = (SELECT id FROM users WHERE uid = $1);
     `,
-    [id]
+    [userId]
   );
 }

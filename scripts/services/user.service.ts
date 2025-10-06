@@ -1,15 +1,19 @@
 import { isPasswordValid } from "@/scripts/utils/crypto.utils";
-import { UserInfo, UserScore } from "@/types/data.types";
+import { UserError, UserInfo, UserScore } from "@/types/data.types";
 import * as Crypto from "expo-crypto";
 import * as SQLite from "expo-sqlite";
 import { v4 as uuidv4 } from "uuid";
 
 import {
   createUserRepository,
+  getUserInfoRepository,
   getUserScoreRepository,
   loginUserRepository,
 } from "@/scripts/repositories/user.repository";
 
+/**
+ * Creates a new user in the database and returns the user information, and user score. TODO: handle duplicate usernames.
+ */
 export async function createUserService(
   db: SQLite.SQLiteDatabase,
   username: string,
@@ -22,35 +26,32 @@ export async function createUserService(
     password
   );
 
-  const userInfo: UserInfo = await createUserRepository(
+  const userId: number = await createUserRepository(
     db,
     uid,
     username,
     hashedPassword
   );
 
-  const userScore = await getUserScoreRepository(db, userInfo.id);
+  const userInfo: UserInfo = await getUserInfoRepository(db, userId);
+  const userScore = await getUserScoreRepository(db, userId);
   return { userInfo, userScore };
 }
 
 /**
- * Retrieves the user information and score for a given user ID from the database.
+ * Logs in a user by verifying the username and password. Returns user information if successful, otherwise throws an error.
  */
 export async function loginUserService(
   db: SQLite.SQLiteDatabase,
   username: string,
   password: string
-): Promise<UserInfo | null> {
+): Promise<UserInfo> {
   const user = await loginUserRepository(db, username);
 
-  if (!user) {
-    throw new Error("User not found");
-  }
-
-  const isVerified = await isPasswordValid(password, user.password);
+  const isVerified = await isPasswordValid(password, user.hashedPassword);
 
   if (!isVerified) {
-    throw new Error("Invalid password");
+    throw new UserError("Neplatné heslo!");
   }
 
   return user.userInfo;

@@ -1,9 +1,12 @@
 import { Grammar, Item } from "@/types/data.types";
 import * as SQLite from "expo-sqlite";
 
+/**
+ * Gets a practice item for the user from the database.
+ */
 export async function getPracticeItemRepository(
   db: SQLite.SQLiteDatabase,
-  id: number
+  userId: number
 ): Promise<Item | null> {
   return await db.getFirstAsync(
     `
@@ -28,13 +31,16 @@ export async function getPracticeItemRepository(
       COALESCE(b.sequence, i.sequence) ASC NULLS LAST,
       i.sequence ASC NULLS LAST
     `,
-    [id]
+    [userId]
   );
 }
 
+/**
+ * Updates the user_item in database.
+ */
 export async function updateUserItemRepository(
   db: SQLite.SQLiteDatabase,
-  id: number,
+  userId: number,
   itemId: number,
   progress: number,
   nextAt: string | null,
@@ -66,10 +72,13 @@ export async function updateUserItemRepository(
         ELSE user_items.mastered_at 
       END;
     `,
-    [id, itemId, progress, nextAt, learnedAt, masteredAt]
+    [userId, itemId, progress, nextAt, learnedAt, masteredAt]
   );
 }
 
+/**
+ * Gets grammar for given grammar_id.
+ */
 export async function getGrammarRepository(
   db: SQLite.SQLiteDatabase,
   grammarId: number

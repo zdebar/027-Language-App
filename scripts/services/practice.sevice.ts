@@ -15,13 +15,13 @@ import {
 } from "@/scripts/utils/items.utils";
 
 /**
- * Gets deck of practices items.
+ * Gets a practice item for the user from the database.
  */
 export async function getPracticeItemService(
   db: SQLite.SQLiteDatabase,
-  id: number
+  userId: number
 ): Promise<Item | null> {
-  const item: Item | null = await getPracticeItemRepository(db, id);
+  const item: Item | null = await getPracticeItemRepository(db, userId);
 
   if (item) {
     item.audio = addOpusSuffix(item.audio);
@@ -31,16 +31,16 @@ export async function getPracticeItemService(
 }
 
 /**
- * Updates the user's word progress in the PostgreSQL database and returns the updated score.
+ * Updates the user_items.progress in database. Returns updated user score.
  */
 export async function updateUserItemService(
   db: SQLite.SQLiteDatabase,
-  id: number,
+  userId: number,
   item: Item
 ): Promise<UserScore> {
   await updateUserItemRepository(
     db,
-    id,
+    userId,
     item.id,
     item.progress,
     getNextAt(item.progress),
@@ -48,11 +48,11 @@ export async function updateUserItemService(
     getThresholdDate(item.progress, practiceConstants.SRS.length)
   );
 
-  return await getUserScoreRepository(db, id);
+  return await getUserScoreRepository(db, userId);
 }
 
 /**
- * Gets ItemInfo for given item ID from the database.
+ * Gets grammar for given item_id.
  */
 export async function getGrammarService(
   db: SQLite.SQLiteDatabase,

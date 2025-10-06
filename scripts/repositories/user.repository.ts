@@ -1,33 +1,37 @@
-import { UserInfo, UserScore } from "@/types/data.types";
+import { UserError, UserInfo, UserScore } from "@/types/data.types";
 import * as SQLite from "expo-sqlite";
 
+/**
+ * Creates a new user in the database and returns the user information.
+ */
 export async function createUserRepository(
   db: SQLite.SQLiteDatabase,
   uid: string,
   username: string,
   password: string
-): Promise<UserInfo> {
-  const insertResult = await db.runAsync(
-    `INSERT INTO users (uid, username, password) VALUES (?, ?, ?)`,
-    [uid, username, password]
-  );
+): Promise<number> {
+  try {
+    const result = await db.runAsync(
+      `INSERT INTO users (uid, username, password) VALUES (?, ?, ?)`,
+      [uid, username, password]
+    );
 
-  const user = await db.getFirstAsync<UserInfo>(
-    `SELECT id, uid, username FROM users WHERE id = ?`,
-    [insertResult.lastInsertRowId]
-  );
-
-  if (!user) {
-    throw new Error("Failed to create user");
+    return result.lastInsertRowId;
+  } catch (error: any) {
+    if (error.message.includes("UNIQUE constraint failed: users.username")) {
+      throw new UserError(`Uživatel "${username}" již existuje.`);
+    }
+    throw error;
   }
-
-  return user;
 }
 
+/**
+ * Logs in a user by username. Returns user information and hashed password if found, otherwise null.
+ */
 export async function loginUserRepository(
   db: SQLite.SQLiteDatabase,
   username: string
-): Promise<{ userInfo: UserInfo; password: string } | null> {
+): Promise<{ userInfo: UserInfo; hashedPassword: string }> {
   const result = await db.getFirstAsync<{
     id: number;
     uid: string;
@@ -47,7 +51,7 @@ export async function loginUserRepository(
   );
 
   if (!result) {
-    return null;
+    throw new UserError(`Uživatel "${username}" neexistuje.`);
   }
 
   return {
@@ -56,13 +60,16 @@ export async function loginUserRepository(
       uid: result.uid,
       username: result.username,
     },
-    password: result.password,
+    hashedPassword: result.password,
   };
 }
 
+/**
+ * Gets user score including learned counts and practice count for today. Throws an error if the user is not found.
+ */
 export async function getUserScoreRepository(
   db: SQLite.SQLiteDatabase,
-  id: number
+  userId: number
 ): Promise<UserScore> {
   const result = await db.getFirstAsync<UserScore>(
     `
@@ -88,12 +95,31 @@ export async function getUserScoreRepository(
     FROM user_items ui
     WHERE ui.user_id = $1;
     `,
-    [id]
+    [userId]
   );
 
-  return {
-    learnedCountToday: result?.learnedCountToday ?? 0,
-    learnedCountNotToday: result?.learnedCountNotToday ?? 0,
-    practiceCountToday: result?.practiceCountToday ?? 0,
-  };
+  if (!result) {
+    throw new Error(`User with ID ${userId} not found.`);
+  }
+
+  return result;
+}
+
+/**
+ * Gets user information by user ID. Throws an error if the user is not found.
+ */
+export async function getUserInfoRepository(
+  db: SQLite.SQLiteDatabase,
+  userId: number
+): Promise<UserInfo> {
+  const result = await db.getFirstAsync<UserInfo>(
+    `SELECT id, uid, username FROM users WHERE id = ?`,
+    [userId]
+  );
+
+  if (!result) {
+    throw new Error(`User with ID ${userId} not found.`);
+  }
+
+  return result;
 }
