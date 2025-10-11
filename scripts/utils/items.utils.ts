@@ -1,5 +1,5 @@
 import practiceConstants from "@/constants/practice";
-import { Item } from "@/types/data.types";
+import { PracticeItem } from "@/types/data.types";
 
 /**
  * Returns the next review date based on the progress and SRS intervals.
@@ -37,7 +37,7 @@ export function addOpusSuffix(audio: string | null): string | null {
 /**
  * Adds audio paths to a list of words.
  */
-export function addAudioSuffixToItems(items: Item[]): Item[] {
+export function addAudioSuffixToItems(items: PracticeItem[]): PracticeItem[] {
   return items.map((item) => ({
     ...item,
     audio: addOpusSuffix(item.audio),

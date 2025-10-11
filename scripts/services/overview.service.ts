@@ -7,7 +7,7 @@ import {
 } from "@/scripts/repositories/overview.repository";
 import { getUserScoreRepository } from "@/scripts/repositories/user.repository";
 import { addAudioSuffixToItems } from "@/scripts/utils/items.utils";
-import { Grammar, Item, UserScore } from "@/types/data.types";
+import { Grammar, PracticeItem, UserScore } from "@/types/data.types";
 import * as SQLite from "expo-sqlite";
 
 /**
@@ -16,8 +16,8 @@ import * as SQLite from "expo-sqlite";
 export async function getUserItemsListService(
   db: SQLite.SQLiteDatabase,
   userId: number
-): Promise<Item[]> {
-  const item: Item[] = await getUserItemsListRepository(db, userId);
+): Promise<PracticeItem[]> {
+  const item: PracticeItem[] = await getUserItemsListRepository(db, userId);
   return addAudioSuffixToItems(item);
 }
 

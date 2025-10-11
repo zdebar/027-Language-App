@@ -1,4 +1,4 @@
-import { Grammar, Item } from "@/types/data.types";
+import { Grammar, PracticeItem } from "@/types/data.types";
 import * as SQLite from "expo-sqlite";
 
 /**
@@ -7,7 +7,7 @@ import * as SQLite from "expo-sqlite";
 export async function getPracticeItemRepository(
   db: SQLite.SQLiteDatabase,
   userId: number
-): Promise<Item | null> {
+): Promise<PracticeItem | null> {
   return await db.getFirstAsync(
     `
     SELECT  

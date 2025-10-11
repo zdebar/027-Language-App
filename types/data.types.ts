@@ -1,4 +1,4 @@
-export interface Item {
+export interface PracticeItem {
   id: number;
   czech: string;
   english: string;

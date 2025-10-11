@@ -1,6 +1,6 @@
 import { ThemedText } from "@/components/themed-text";
 import { ThemedButton } from "@/components/ui/themed-button";
-import GlobalStyles from "@/constants/global-styles";
+import { LayoutStyling } from "@/constants/theme";
 import { useUser } from "@/hooks/user-user";
 import { useRouter } from "expo-router";
 import { StyleSheet, View } from "react-native";
@@ -18,7 +18,7 @@ export default function HomeScreen() {
   };
 
   return (
-    <View style={GlobalStyles.center}>
+    <View style={LayoutStyling.center}>
       <ThemedText type="title" style={styles.heading}>
         Angličtina App
       </ThemedText>
@@ -28,7 +28,7 @@ export default function HomeScreen() {
         <>
           <ThemedButton text="Login" onPress={handleLogin} />
           <ThemedText type="link" onPress={handleRegister}>
-            register ...
+            Don&apos;t have an account? Register
           </ThemedText>
         </>
       )}

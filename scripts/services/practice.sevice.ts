@@ -1,5 +1,5 @@
 import practiceConstants from "@/constants/practice";
-import { Grammar, Item, UserScore } from "@/types/data.types";
+import { Grammar, PracticeItem, UserScore } from "@/types/data.types";
 import * as SQLite from "expo-sqlite";
 
 import {
@@ -20,8 +20,8 @@ import {
 export async function getPracticeItemService(
   db: SQLite.SQLiteDatabase,
   userId: number
-): Promise<Item | null> {
-  const item: Item | null = await getPracticeItemRepository(db, userId);
+): Promise<PracticeItem | null> {
+  const item: PracticeItem | null = await getPracticeItemRepository(db, userId);
 
   if (item) {
     item.audio = addOpusSuffix(item.audio);
@@ -36,7 +36,7 @@ export async function getPracticeItemService(
 export async function updateUserItemService(
   db: SQLite.SQLiteDatabase,
   userId: number,
-  item: Item
+  item: PracticeItem
 ): Promise<UserScore> {
   await updateUserItemRepository(
     db,

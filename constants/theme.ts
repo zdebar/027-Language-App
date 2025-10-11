@@ -3,7 +3,7 @@
  * There are many other ways to style your app. For example, [Nativewind](https://www.nativewind.dev/), [Tamagui](https://tamagui.dev/), [unistyles](https://reactnativeunistyles.vercel.app), etc.
  */
 
-import { Platform } from "react-native";
+import { Platform, StyleSheet } from "react-native";
 
 const tintColorLight = "#0a7ea4";
 const tintColorDark = "#0a7ea4";
@@ -49,5 +49,51 @@ export const Fonts = Platform.select({
     rounded:
       "'SF Pro Rounded', 'Hiragino Maru Gothic ProN', Meiryo, 'MS PGothic', sans-serif",
     mono: "SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
+  },
+});
+
+export const LayoutStyling = StyleSheet.create({
+  center: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  button: {
+    width: 230,
+    height: 40,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 5,
+  },
+});
+
+export const TextStyling = StyleSheet.create({
+  button: {
+    textAlign: "center",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  default: {
+    fontSize: 16,
+    lineHeight: 24,
+  },
+  defaultSemiBold: {
+    fontSize: 16,
+    lineHeight: 24,
+    fontWeight: "600",
+  },
+  title: {
+    fontSize: 32,
+    fontWeight: "bold",
+    lineHeight: 32,
+  },
+  subtitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+  link: {
+    lineHeight: 30,
+    fontSize: 16,
+    color: tintColorLight,
   },
 });
