@@ -1,5 +1,6 @@
 import { UserProvider } from "@/context/user-provider";
 import { useColorScheme } from "@/hooks/use-color-scheme";
+import { useUser } from "@/hooks/user-user";
 import {
   DarkTheme,
   DefaultTheme,
@@ -26,16 +27,24 @@ export default function RootLayout() {
             assetId: require("@/assets/database/language-app.db"),
           }}
         >
-          <Stack>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen
-              name="modal"
-              options={{ presentation: "modal", title: "Modal" }}
-            />
-          </Stack>
+          <UserDependentStack />
           <StatusBar style="auto" />
         </SQLiteProvider>
       </ThemeProvider>
     </UserProvider>
+  );
+}
+
+function UserDependentStack() {
+  const { userInfo } = useUser();
+
+  return (
+    <Stack>
+      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Protected guard={!userInfo}>
+        <Stack.Screen name="login" />
+        <Stack.Screen name="register" />
+      </Stack.Protected>
+    </Stack>
   );
 }

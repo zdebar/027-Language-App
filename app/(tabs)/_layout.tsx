@@ -5,9 +5,11 @@ import { HapticTab } from "@/components/ui/haptic-tab";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { Colors } from "@/constants/theme";
 import { useColorScheme } from "@/hooks/use-color-scheme";
+import { useUser } from "@/hooks/user-user";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+  const { userInfo } = useUser();
 
   return (
     <Tabs
@@ -16,9 +18,9 @@ export default function TabLayout() {
         headerShown: false,
         tabBarButton: HapticTab,
         tabBarStyle: {
-          height: 60, // Increase the height of the tab bar
-          paddingBottom: 4, // Add padding to prevent cropping
-          paddingTop: 4,
+          height: userInfo ? 60 : 0,
+          paddingBottom: userInfo ? 4 : 0,
+          paddingTop: userInfo ? 4 : 0,
         },
       }}
     >
