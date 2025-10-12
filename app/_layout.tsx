@@ -40,7 +40,7 @@ function UserDependentStack() {
 
   return (
     <Stack>
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen name="(tabs)" />
       <Stack.Protected guard={!userInfo}>
         <Stack.Screen name="login" />
         <Stack.Screen name="register" />

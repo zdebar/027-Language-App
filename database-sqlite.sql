@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS users (
-  id INTEGER PRIMARY KEY,  
-  uid TEXT UNIQUE,
-  username TEXT UNIQUE,
+  id INTEGER PRIMARY KEY AUTOINCREMENT,  
+  uid TEXT UNIQUE NOT NULL, -- public user identifier
+  username TEXT UNIQUE NOT NULL,
   password TEXT NOT NULL, -- hashed password
   created_at TEXT DEFAULT CURRENT_TIMESTAMP
 );
@@ -53,15 +53,10 @@ CREATE TABLE IF NOT EXISTS user_score (
   PRIMARY KEY (user_id, "date")
 );
 
--- Trigger to update updated_at on user_items and manage user_score
-CREATE TRIGGER update_user_items_updated_at
+-- Trigger to manage user_score only
+CREATE TRIGGER update_user_score
 AFTER UPDATE ON user_items
 BEGIN
-  -- Update the updated_at column
-  UPDATE user_items
-  SET updated_at = CURRENT_TIMESTAMP
-  WHERE user_id = NEW.user_id AND item_id = NEW.item_id;
-
   -- Insert or update the user_score table
   INSERT INTO user_score (user_id, "date", item_count)
   VALUES (NEW.user_id, DATE('now'), 1)

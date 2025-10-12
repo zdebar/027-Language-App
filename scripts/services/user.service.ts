@@ -19,6 +19,14 @@ export async function createUserService(
   username: string,
   password: string
 ): Promise<{ userInfo: UserInfo; userScore: UserScore }> {
+  if (!username || username.trim() === "") {
+    throw new UserError("Uživatelské jméno nesmí být prázdné!");
+  }
+
+  if (!password || password.trim() === "") {
+    throw new UserError("Heslo nesmí být prázdné!");
+  }
+
   const uid: string = uuidv4();
 
   const hashedPassword = await Crypto.digestStringAsync(
@@ -26,12 +34,15 @@ export async function createUserService(
     password
   );
 
+  console.log("Creating user:", username, password);
+
   const userId: number = await createUserRepository(
     db,
     uid,
     username,
     hashedPassword
   );
+  console.log("User created with ID:", userId);
 
   const userInfo: UserInfo = await getUserInfoRepository(db, userId);
   const userScore = await getUserScoreRepository(db, userId);
@@ -45,14 +56,17 @@ export async function loginUserService(
   db: SQLite.SQLiteDatabase,
   username: string,
   password: string
-): Promise<UserInfo> {
+): Promise<{ userInfo: UserInfo; userScore: UserScore }> {
+  console.log("Logging in user:", username);
   const user = await loginUserRepository(db, username);
-
+  console.log("User found:", user);
   const isVerified = await isPasswordValid(password, user.hashedPassword);
 
   if (!isVerified) {
     throw new UserError("Neplatné heslo!");
   }
 
-  return user.userInfo;
+  const userScore = await getUserScoreRepository(db, user.userInfo.id);
+
+  return { userInfo: user.userInfo, userScore };
 }

@@ -47,6 +47,7 @@ export async function updateUserItemRepository(
   learnedAt: string | null,
   masteredAt: string | null
 ): Promise<void> {
+  const updatedAt = new Date().toISOString();
   await db.runAsync(
     `
     INSERT INTO user_items (user_id, item_id, progress, next_at, learned_at, mastered_at)
@@ -54,9 +55,10 @@ export async function updateUserItemRepository(
       (SELECT id FROM users WHERE uid = $1),
       $2, -- item_id
       $3, -- progress
-      $4, -- next_at
-      $5, -- learned_at
-      $6  -- mastered_at
+      $4, -- updated_at
+      $5, -- next_at
+      $6, -- learned_at
+      $7  -- mastered_at
     )
     ON CONFLICT(user_id, item_id) DO UPDATE SET 
       progress = EXCLUDED.progress, 
@@ -72,7 +74,7 @@ export async function updateUserItemRepository(
         ELSE user_items.mastered_at 
       END;
     `,
-    [userId, itemId, progress, nextAt, learnedAt, masteredAt]
+    [userId, itemId, progress, updatedAt, nextAt, learnedAt, masteredAt]
   );
 }
 

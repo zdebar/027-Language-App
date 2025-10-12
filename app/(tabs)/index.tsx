@@ -1,9 +1,9 @@
 import { ThemedText } from "@/components/themed-text";
+import { ThemedView } from "@/components/themed-view";
 import { ThemedButton } from "@/components/ui/themed-button";
 import { LayoutStyling } from "@/constants/theme";
 import { useUser } from "@/hooks/user-user";
 import { useRouter } from "expo-router";
-import { StyleSheet, View } from "react-native";
 
 export default function HomeScreen() {
   const { userInfo } = useUser();
@@ -18,10 +18,8 @@ export default function HomeScreen() {
   };
 
   return (
-    <View style={LayoutStyling.center}>
-      <ThemedText type="title" style={styles.heading}>
-        Angličtina App
-      </ThemedText>
+    <ThemedView style={LayoutStyling.top}>
+      <ThemedText type="title">Angličtina App</ThemedText>
       {userInfo ? (
         <ThemedText>Welcome, {userInfo.username}!</ThemedText>
       ) : (
@@ -32,12 +30,6 @@ export default function HomeScreen() {
           </ThemedText>
         </>
       )}
-    </View>
+    </ThemedView>
   );
 }
-
-const styles = StyleSheet.create({
-  heading: {
-    marginBottom: 20,
-  },
-});

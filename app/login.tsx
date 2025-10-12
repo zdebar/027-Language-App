@@ -1,18 +1,78 @@
 import { ThemedText } from "@/components/themed-text";
+import { ThemedView } from "@/components/themed-view";
+import { ThemedButton } from "@/components/ui/themed-button";
+import { ThemedTextInput } from "@/components/ui/themed-text-input";
 import { LayoutStyling } from "@/constants/theme";
+import { useUser } from "@/hooks/user-user";
+import { loginUserService } from "@/scripts/services/user.service";
+import { UserError, UserInfo, UserScore } from "@/types/data.types";
+import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { useState } from "react";
-import { Button, StyleSheet, TextInput, View } from "react-native";
+import * as SQLite from "expo-sqlite";
+import React, { useEffect, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
 
 export default function LoginScreen() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [passwordRepeat, setPasswordRepeat] = useState("");
   const router = useRouter();
+  const [db, setDb] = useState<SQLite.SQLiteDatabase | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const { setUserInfo, setUserScore } = useUser();
+  const [showPassword, setShowPassword] = useState(false);
 
-  const handleLogin = () => {
-    // Handle login logic here
-    console.log("Logging in with", { username, password, passwordRepeat });
+  useEffect(() => {
+    const initializeDb = async () => {
+      const database = await SQLite.openDatabaseAsync("language-app.db");
+      setDb(database);
+    };
+
+    initializeDb();
+
+    return () => {
+      if (db) {
+        db.closeAsync().catch((error) =>
+          console.error("Failed to close DB", error)
+        );
+      }
+    };
+  }, []);
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      username: "",
+      password: "",
+    },
+  });
+
+  const onSubmit = async (data: { username: string; password: string }) => {
+    if (!db) {
+      console.error("Database not initialized");
+      return;
+    }
+
+    try {
+      const {
+        userInfo,
+        userScore,
+      }: { userInfo: UserInfo; userScore: UserScore } = await loginUserService(
+        db,
+        data.username,
+        data.password
+      );
+      setUserInfo(userInfo);
+      setUserScore(userScore);
+      setErrorMessage(null);
+      router.push("/");
+    } catch (error: unknown) {
+      if (error instanceof UserError) {
+        setErrorMessage(error.message);
+      } else {
+        console.error("An unexpected error occurred", error);
+      }
+    }
   };
 
   const handleRegister = () => {
@@ -20,55 +80,68 @@ export default function LoginScreen() {
   };
 
   return (
-    <View style={LayoutStyling.center}>
-      <ThemedText type="default" style={styles.title}>
-        Login Page
-      </ThemedText>
-      <TextInput
-        style={styles.input}
-        placeholder="Username"
-        value={username}
-        onChangeText={setUsername}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Repeat Password"
-        secureTextEntry
-        value={passwordRepeat}
-        onChangeText={setPasswordRepeat}
-      />
-      <Button title="Login" onPress={handleLogin} />
+    <ThemedView style={LayoutStyling.top}>
+      <ThemedText type="title">Login</ThemedText>
 
+      <Controller
+        name="username"
+        control={control}
+        rules={{ required: "Uživatelské jméno je povinné" }}
+        render={({ field: { onChange, value } }) => (
+          <ThemedTextInput
+            style={LayoutStyling.input}
+            placeholder="uživatelské jméno"
+            value={value}
+            onChangeText={onChange}
+          />
+        )}
+      />
+      {errors.username && (
+        <ThemedText type="error">{errors.username.message}</ThemedText>
+      )}
+
+      <Controller
+        name="password"
+        control={control}
+        rules={{ required: "Heslo je povinné" }}
+        render={({ field: { onChange, value } }) => (
+          <ThemedView style={{ position: "relative" }}>
+            <ThemedTextInput
+              style={LayoutStyling.input}
+              placeholder="heslo"
+              secureTextEntry={!showPassword}
+              value={value}
+              onChangeText={onChange}
+            />
+            <Ionicons
+              name={showPassword ? "eye-off" : "eye"}
+              size={24}
+              color="gray"
+              style={{
+                position: "absolute",
+                right: 10,
+                top: "47%",
+                transform: [{ translateY: -12 }],
+              }}
+              onPress={() => setShowPassword((prev) => !prev)}
+            />
+          </ThemedView>
+        )}
+      />
+      {errors.password && (
+        <ThemedText type="error">{errors.password.message}</ThemedText>
+      )}
+
+      {errorMessage && (
+        <ThemedText type="error" style={{ marginBottom: 10 }}>
+          {errorMessage}
+        </ThemedText>
+      )}
+
+      <ThemedButton text="Login" onPress={handleSubmit(onSubmit)} />
       <ThemedText type="link" onPress={handleRegister}>
         Don&apos;t have an account? Register
       </ThemedText>
-    </View>
+    </ThemedView>
   );
 }
-
-const styles = StyleSheet.create({
-  title: {
-    fontSize: 24,
-    marginBottom: 20,
-  },
-  input: {
-    width: "80%",
-    padding: 10,
-    marginVertical: 10,
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 5,
-  },
-  registerLink: {
-    marginTop: 15,
-    color: "blue",
-    textDecorationLine: "underline",
-  },
-});

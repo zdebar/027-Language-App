@@ -10,6 +10,7 @@ const tintColorDark = "#0a7ea4";
 export const Colors = {
   light: {
     text: "#11181C",
+    placeholderText: "#687076",
     background: "#fff",
     tint: tintColorLight,
     icon: "#687076",
@@ -18,6 +19,7 @@ export const Colors = {
   },
   dark: {
     text: "#ECEDEE",
+    placeholderText: "#687076",
     background: "#151718",
     tint: tintColorDark,
     icon: "#9BA1A6",
@@ -53,16 +55,29 @@ export const Fonts = Platform.select({
 });
 
 export const LayoutStyling = StyleSheet.create({
+  top: {
+    flex: 1,
+    alignItems: "center",
+    gap: 5,
+  },
   center: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    gap: 5,
   },
   button: {
-    width: 230,
+    width: 320,
     height: 40,
     justifyContent: "center",
     alignItems: "center",
+    borderRadius: 5,
+  },
+  input: {
+    width: 320,
+    height: 40,
+    borderWidth: 1,
+    borderColor: "white",
     borderRadius: 5,
   },
 });
@@ -86,14 +101,21 @@ export const TextStyling = StyleSheet.create({
     fontSize: 32,
     fontWeight: "bold",
     lineHeight: 32,
+    marginTop: 25,
+    marginBottom: 20,
   },
   subtitle: {
     fontSize: 20,
     fontWeight: "bold",
   },
   link: {
-    lineHeight: 30,
+    lineHeight: 24,
     fontSize: 16,
     color: tintColorLight,
+  },
+  error: {
+    lineHeight: 24,
+    fontSize: 16,
+    color: "red",
   },
 });

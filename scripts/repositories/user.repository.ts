@@ -11,16 +11,20 @@ export async function createUserRepository(
   password: string
 ): Promise<number> {
   try {
-    const result = await db.runAsync(
-      `INSERT INTO users (uid, username, password) VALUES (?, ?, ?)`,
-      [uid, username, password]
-    );
+    // const result = await db.runAsync(
+    //   `INSERT INTO users (uid, username, password) VALUES (?, ?, ?)`,
+    //   ["test", "test", "test"]
+    // );
 
-    return result.lastInsertRowId;
+    // return Number(result.lastInsertRowId);
+    console.log("Inserting user into database:", uid, username, password);
+
+    return 1;
   } catch (error: any) {
     if (error.message.includes("UNIQUE constraint failed: users.username")) {
       throw new UserError(`Uživatel "${username}" již existuje.`);
     }
+
     throw error;
   }
 }
@@ -32,6 +36,8 @@ export async function loginUserRepository(
   db: SQLite.SQLiteDatabase,
   username: string
 ): Promise<{ userInfo: UserInfo; hashedPassword: string }> {
+  console.log("Querying user by username:", username);
+
   const result = await db.getFirstAsync<{
     id: number;
     uid: string;
@@ -49,6 +55,8 @@ export async function loginUserRepository(
     `,
     [username]
   );
+
+  console.log("Query result:", result);
 
   if (!result) {
     throw new UserError(`Uživatel "${username}" neexistuje.`);
