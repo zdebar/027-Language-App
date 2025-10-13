@@ -9,7 +9,7 @@ import { UserError, UserInfo, UserScore } from "@/types/data.types";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useSQLiteContext } from "expo-sqlite";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
 export default function RegisterScreen() {
@@ -20,29 +20,6 @@ export default function RegisterScreen() {
   const db = useSQLiteContext();
   const router = useRouter();
   const { setUserInfo, setUserScore } = useUser();
-
-  useEffect(() => {
-    const initializeDb = async () => {
-      try {
-        const result = await db.getFirstAsync<{
-          id: number;
-          uid: string;
-          username: string;
-          password: string;
-        }>(
-          `
-          SELECT *
-          FROM users u;
-          `
-        );
-        console.log("Query result:", result);
-      } catch (error) {
-        console.error("Failed to initialize database", error);
-      }
-    };
-
-    initializeDb();
-  }, [db]);
 
   const {
     control,
@@ -57,13 +34,9 @@ export default function RegisterScreen() {
     },
   });
 
-  const onSubmit = async (data: {
-    username: string;
-    password: string;
-    passwordConfirmation: string;
-  }) => {
+  const onSubmit = async (data: { username: string; password: string }) => {
     if (!db) {
-      console.error("Database not initialized");
+      console.log("Database not found");
       return;
     }
 
@@ -76,7 +49,6 @@ export default function RegisterScreen() {
         data.username,
         data.password
       );
-      console.log("Registration successful:", userInfo, userScore);
       setErrorMessage(null);
       setUserInfo(userInfo);
       setUserScore(userScore);
@@ -137,7 +109,7 @@ export default function RegisterScreen() {
           },
         }}
         render={({ field: { onChange, value } }) => (
-          <ThemedView style={{ position: "relative" }}>
+          <ThemedView style={{ position: "relative", width: "100%" }}>
             <ThemedTextInput
               style={LayoutStyling.input}
               placeholder="heslo"
@@ -173,7 +145,7 @@ export default function RegisterScreen() {
             value === watch("password") || "Hesla se neshodují",
         }}
         render={({ field: { onChange, value } }) => (
-          <ThemedView style={{ position: "relative" }}>
+          <ThemedView style={{ position: "relative", width: "100%" }}>
             <ThemedTextInput
               style={LayoutStyling.input}
               placeholder="potvrzení hesla"

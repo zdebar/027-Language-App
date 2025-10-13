@@ -8,18 +8,15 @@ export async function createUserRepository(
   db: SQLiteDatabase,
   uid: string,
   username: string,
-  password: string
+  hashedPassword: string
 ): Promise<number> {
   try {
-    // const result = await db.runAsync(
-    //   `INSERT INTO users (uid, username, password) VALUES (?, ?, ?)`,
-    //   ["test", "test", "test"]
-    // );
+    const result = await db.runAsync(
+      `INSERT INTO users (uid, username, password) VALUES (?, ?, ?)`,
+      [uid, username, hashedPassword]
+    );
 
-    // return Number(result.lastInsertRowId);
-    console.log("Inserting user into database:", uid, username, password);
-
-    return 1;
+    return Number(result.lastInsertRowId);
   } catch (error: any) {
     if (error.message.includes("UNIQUE constraint failed: users.username")) {
       throw new UserError(`Uživatel "${username}" již existuje.`);

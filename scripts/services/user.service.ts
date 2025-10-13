@@ -35,18 +35,16 @@ export async function createUserService(
     password
   );
 
-  console.log("Creating user:", username, password);
-
   const userId: number = await createUserRepository(
     db,
     uid,
     username,
     hashedPassword
   );
-  console.log("User created with ID:", userId);
 
   const userInfo: UserInfo = await getUserInfoRepository(db, userId);
   const userScore = await getUserScoreRepository(db, userId);
+
   return { userInfo, userScore };
 }
 

@@ -1,3 +1,4 @@
+import ListUsersButton from "@/components/list-users-button";
 import LogoutButton from "@/components/logout-button";
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
@@ -23,6 +24,7 @@ export default function HomeScreen() {
     <ThemedView style={LayoutStyling.top}>
       <ThemedText type="title">Angličtina App</ThemedText>
       <UserDashboard />
+      <ListUsersButton />
       {userInfo ? (
         <>
           <ThemedText>Welcome, {userInfo.username}!</ThemedText>
