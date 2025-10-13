@@ -1,11 +1,11 @@
 import { Grammar, PracticeItem } from "@/types/data.types";
-import * as SQLite from "expo-sqlite";
+import { type SQLiteDatabase } from "expo-sqlite";
 
 /**
  * Gets a list of items started by the user.
  */
 export async function getUserItemsListRepository(
-  db: SQLite.SQLiteDatabase,
+  db: SQLiteDatabase,
   userId: number
 ): Promise<PracticeItem[]> {
   return await db.getAllAsync<PracticeItem>(
@@ -33,7 +33,7 @@ export async function getUserItemsListRepository(
  * Gets a list of grammar topics from items started by the user.
  */
 export async function getGrammarListRepository(
-  db: SQLite.SQLiteDatabase,
+  db: SQLiteDatabase,
   userId: number
 ): Promise<Grammar[]> {
   return await db.getAllAsync<Grammar>(
@@ -58,7 +58,7 @@ export async function getGrammarListRepository(
  * Resets user_items.progress to 0 for given user_id and item_id.
  */
 export async function resetItemRepository(
-  db: SQLite.SQLiteDatabase,
+  db: SQLiteDatabase,
   userId: number,
   itemId: number
 ): Promise<void> {
@@ -77,7 +77,7 @@ export async function resetItemRepository(
  * Resets all user_items.progress to 0 for given user_id and all items linked to given grammar_id.
  */
 export async function resetGrammarItemsRepository(
-  db: SQLite.SQLiteDatabase,
+  db: SQLiteDatabase,
   userId: number,
   grammarId: number
 ): Promise<void> {
@@ -100,7 +100,7 @@ export async function resetGrammarItemsRepository(
  * Resets all user_items.progress to 0 for given user_id.
  */
 export async function resetUserRepository(
-  db: SQLite.SQLiteDatabase,
+  db: SQLiteDatabase,
   userId: number
 ): Promise<void> {
   await db.runAsync(

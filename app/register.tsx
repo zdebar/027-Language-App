@@ -3,32 +3,28 @@ import { ThemedView } from "@/components/themed-view";
 import { ThemedButton } from "@/components/ui/themed-button";
 import { ThemedTextInput } from "@/components/ui/themed-text-input";
 import { LayoutStyling } from "@/constants/theme";
-import { useUser } from "@/hooks/user-user";
+import { useUser } from "@/hooks/use-user";
 import { createUserService } from "@/scripts/services/user.service";
 import { UserError, UserInfo, UserScore } from "@/types/data.types";
-import { Ionicons } from "@expo/vector-icons"; // Přidáno pro ikony
+import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import * as SQLite from "expo-sqlite";
+import { useSQLiteContext } from "expo-sqlite";
 import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
 export default function RegisterScreen() {
-  const router = useRouter();
-  const [db, setDb] = useState<SQLite.SQLiteDatabase | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const { setUserInfo, setUserScore } = useUser();
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirmation, setShowPasswordConfirmation] =
     useState(false);
+  const db = useSQLiteContext();
+  const router = useRouter();
+  const { setUserInfo, setUserScore } = useUser();
 
   useEffect(() => {
-    let isMounted = true;
-    let databaseInstance: SQLite.SQLiteDatabase | undefined;
-
     const initializeDb = async () => {
       try {
-        const database = await SQLite.openDatabaseAsync("language-app.db");
-        const result = await database.getFirstAsync<{
+        const result = await db.getFirstAsync<{
           id: number;
           uid: string;
           username: string;
@@ -40,28 +36,13 @@ export default function RegisterScreen() {
           `
         );
         console.log("Query result:", result);
-        if (isMounted) {
-          setDb(database);
-          databaseInstance = database;
-        } else {
-          await database.closeAsync();
-        }
       } catch (error) {
         console.error("Failed to initialize database", error);
       }
     };
 
     initializeDb();
-
-    return () => {
-      isMounted = false;
-      if (databaseInstance) {
-        databaseInstance.closeAsync().catch((error) => {
-          console.error("Failed to close the database", error);
-        });
-      }
-    };
-  }, []);
+  }, [db]);
 
   const {
     control,

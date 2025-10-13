@@ -1,4 +1,4 @@
-import { useUser } from "@/hooks/user-user";
+import { useUser } from "@/hooks/use-user";
 import React from "react";
 import { TableLine } from "./ui/table-line";
 

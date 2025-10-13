@@ -2,7 +2,7 @@ import { ThemedView } from "@/components/themed-view";
 import { LayoutStyling } from "@/constants/theme";
 import { UserProvider } from "@/context/user-provider";
 import { useColorScheme } from "@/hooks/use-color-scheme";
-import { useUser } from "@/hooks/user-user";
+import { useUser } from "@/hooks/use-user";
 import {
   DarkTheme,
   DefaultTheme,

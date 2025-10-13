@@ -1,4 +1,4 @@
-import { useUser } from "@/hooks/user-user";
+import { useUser } from "@/hooks/use-user";
 import { Text, View } from "react-native";
 
 export default function ProfileScreen() {

@@ -62,7 +62,10 @@ export const LayoutStyling = StyleSheet.create({
   },
   top: {
     flex: 1,
+    width: "100%",
     alignItems: "center",
+    justifyContent: "flex-start",
+    flexDirection: "column",
     gap: 5,
   },
   center: {

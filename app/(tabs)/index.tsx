@@ -1,9 +1,10 @@
+import LogoutButton from "@/components/logout-button";
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { ThemedButton } from "@/components/ui/themed-button";
 import { UserDashboard } from "@/components/user-dashboard";
 import { LayoutStyling } from "@/constants/theme";
-import { useUser } from "@/hooks/user-user";
+import { useUser } from "@/hooks/use-user";
 import { useRouter } from "expo-router";
 
 export default function HomeScreen() {
@@ -23,7 +24,10 @@ export default function HomeScreen() {
       <ThemedText type="title">Angličtina App</ThemedText>
       <UserDashboard />
       {userInfo ? (
-        <ThemedText>Welcome, {userInfo.username}!</ThemedText>
+        <>
+          <ThemedText>Welcome, {userInfo.username}!</ThemedText>
+          <LogoutButton />
+        </>
       ) : (
         <>
           <ThemedButton text="Login" onPress={handleLogin} />

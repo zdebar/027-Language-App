@@ -1,11 +1,11 @@
 import { UserError, UserInfo, UserScore } from "@/types/data.types";
-import * as SQLite from "expo-sqlite";
+import { type SQLiteDatabase } from "expo-sqlite";
 
 /**
  * Creates a new user in the database and returns the user information.
  */
 export async function createUserRepository(
-  db: SQLite.SQLiteDatabase,
+  db: SQLiteDatabase,
   uid: string,
   username: string,
   password: string
@@ -33,11 +33,9 @@ export async function createUserRepository(
  * Logs in a user by username. Returns user information and hashed password if found, otherwise null.
  */
 export async function loginUserRepository(
-  db: SQLite.SQLiteDatabase,
+  db: SQLiteDatabase,
   username: string
 ): Promise<{ userInfo: UserInfo; hashedPassword: string }> {
-  console.log("Querying user by username:", username);
-
   try {
     const result = await db.getFirstAsync<{
       id: number;
@@ -68,7 +66,6 @@ export async function loginUserRepository(
       hashedPassword: result.password,
     };
   } catch (error) {
-    console.log("Database query error:", error);
     throw error instanceof UserError
       ? error
       : new Error("Failed to login user.");
@@ -79,7 +76,7 @@ export async function loginUserRepository(
  * Gets user score including learned counts and practice count for today. Throws an error if the user is not found.
  */
 export async function getUserScoreRepository(
-  db: SQLite.SQLiteDatabase,
+  db: SQLiteDatabase,
   userId: number
 ): Promise<UserScore> {
   const result = await db.getFirstAsync<UserScore>(
@@ -109,6 +106,8 @@ export async function getUserScoreRepository(
     [userId]
   );
 
+  console.log("User score query result:", result);
+
   if (!result) {
     throw new Error(`User with ID ${userId} not found.`);
   }
@@ -120,7 +119,7 @@ export async function getUserScoreRepository(
  * Gets user information by user ID. Throws an error if the user is not found.
  */
 export async function getUserInfoRepository(
-  db: SQLite.SQLiteDatabase,
+  db: SQLiteDatabase,
   userId: number
 ): Promise<UserInfo> {
   const result = await db.getFirstAsync<UserInfo>(

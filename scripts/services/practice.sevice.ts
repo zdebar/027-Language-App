@@ -1,6 +1,6 @@
 import practiceConstants from "@/constants/practice";
 import { Grammar, PracticeItem, UserScore } from "@/types/data.types";
-import * as SQLite from "expo-sqlite";
+import { SQLiteDatabase } from "expo-sqlite";
 
 import {
   getGrammarRepository,
@@ -18,7 +18,7 @@ import {
  * Gets a practice item for the user from the database.
  */
 export async function getPracticeItemService(
-  db: SQLite.SQLiteDatabase,
+  db: SQLiteDatabase,
   userId: number
 ): Promise<PracticeItem | null> {
   const item: PracticeItem | null = await getPracticeItemRepository(db, userId);
@@ -34,7 +34,7 @@ export async function getPracticeItemService(
  * Updates the user_items.progress in database. Returns updated user score.
  */
 export async function updateUserItemService(
-  db: SQLite.SQLiteDatabase,
+  db: SQLiteDatabase,
   userId: number,
   item: PracticeItem
 ): Promise<UserScore> {
@@ -55,7 +55,7 @@ export async function updateUserItemService(
  * Gets grammar for given item_id.
  */
 export async function getGrammarService(
-  db: SQLite.SQLiteDatabase,
+  db: SQLiteDatabase,
   itemId: number
 ): Promise<Grammar> {
   return await getGrammarRepository(db, itemId);

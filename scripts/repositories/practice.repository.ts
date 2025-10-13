@@ -1,11 +1,11 @@
 import { Grammar, PracticeItem } from "@/types/data.types";
-import * as SQLite from "expo-sqlite";
+import { type SQLiteDatabase } from "expo-sqlite";
 
 /**
  * Gets a practice item for the user from the database.
  */
 export async function getPracticeItemRepository(
-  db: SQLite.SQLiteDatabase,
+  db: SQLiteDatabase,
   userId: number
 ): Promise<PracticeItem | null> {
   return await db.getFirstAsync(
@@ -39,7 +39,7 @@ export async function getPracticeItemRepository(
  * Updates the user_item in database.
  */
 export async function updateUserItemRepository(
-  db: SQLite.SQLiteDatabase,
+  db: SQLiteDatabase,
   userId: number,
   itemId: number,
   progress: number,
@@ -82,7 +82,7 @@ export async function updateUserItemRepository(
  * Gets grammar for given grammar_id.
  */
 export async function getGrammarRepository(
-  db: SQLite.SQLiteDatabase,
+  db: SQLiteDatabase,
   grammarId: number
 ): Promise<Grammar> {
   const result = await db.getFirstAsync<Grammar>(

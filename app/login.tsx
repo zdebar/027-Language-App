@@ -3,40 +3,21 @@ import { ThemedView } from "@/components/themed-view";
 import { ThemedButton } from "@/components/ui/themed-button";
 import { ThemedTextInput } from "@/components/ui/themed-text-input";
 import { LayoutStyling } from "@/constants/theme";
-import { useUser } from "@/hooks/user-user";
+import { useUser } from "@/hooks/use-user";
 import { loginUserService } from "@/scripts/services/user.service";
 import { UserError, UserInfo, UserScore } from "@/types/data.types";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import * as SQLite from "expo-sqlite";
-import React, { useEffect, useState } from "react";
+import { useSQLiteContext } from "expo-sqlite";
+import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
 export default function LoginScreen() {
-  const router = useRouter();
-  const [db, setDb] = useState<SQLite.SQLiteDatabase | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const { setUserInfo, setUserScore } = useUser();
   const [showPassword, setShowPassword] = useState(false);
-
-  useEffect(() => {
-    const initializeDb = async () => {
-      const database = await SQLite.openDatabaseAsync("language-app.db");
-      setDb(database);
-    };
-
-    initializeDb();
-  }, []);
-
-  useEffect(() => {
-    return () => {
-      if (db) {
-        db.closeAsync().catch((error) =>
-          console.error("Failed to close DB", error)
-        );
-      }
-    };
-  }, [db]);
+  const db = useSQLiteContext();
+  const router = useRouter();
+  const { setUserInfo, setUserScore } = useUser();
 
   const {
     control,
@@ -51,12 +32,11 @@ export default function LoginScreen() {
 
   const onSubmit = async (data: { username: string; password: string }) => {
     if (!db) {
-      console.error("Database not initialized");
+      console.error("Database not found");
       return;
     }
 
     try {
-      console.log("Attempting login with", data);
       const {
         userInfo,
         userScore,
@@ -65,7 +45,7 @@ export default function LoginScreen() {
         data.username,
         data.password
       );
-      console.log("Login successful:", userInfo, userScore);
+      console.log("Login screen:", userInfo, userScore);
       setUserInfo(userInfo);
       setUserScore(userScore);
       setErrorMessage(null);
@@ -103,13 +83,12 @@ export default function LoginScreen() {
       {errors.username && (
         <ThemedText type="error">{errors.username.message}</ThemedText>
       )}
-
       <Controller
         name="password"
         control={control}
         rules={{ required: "Heslo je povinné" }}
         render={({ field: { onChange, value } }) => (
-          <ThemedView style={{ position: "relative" }}>
+          <ThemedView style={{ position: "relative", width: "100%" }}>
             <ThemedTextInput
               style={LayoutStyling.input}
               placeholder="heslo"
@@ -135,14 +114,13 @@ export default function LoginScreen() {
       {errors.password && (
         <ThemedText type="error">{errors.password.message}</ThemedText>
       )}
-
       {errorMessage && (
         <ThemedText type="error" style={{ marginBottom: 10 }}>
           {errorMessage}
         </ThemedText>
       )}
-
       <ThemedButton text="Login" onPress={handleSubmit(onSubmit)} />
+
       <ThemedText type="link" onPress={handleRegister}>
         Don&apos;t have an account? Register
       </ThemedText>

@@ -1,7 +1,7 @@
 import { isPasswordValid } from "@/scripts/utils/crypto.utils";
 import { UserError, UserInfo, UserScore } from "@/types/data.types";
 import * as Crypto from "expo-crypto";
-import * as SQLite from "expo-sqlite";
+import { type SQLiteDatabase } from "expo-sqlite";
 import "react-native-get-random-values";
 import { v4 as uuidv4 } from "uuid";
 
@@ -16,7 +16,7 @@ import {
  * Creates a new user in the database and returns the user information, and user score. TODO: handle duplicate usernames.
  */
 export async function createUserService(
-  db: SQLite.SQLiteDatabase,
+  db: SQLiteDatabase,
   username: string,
   password: string
 ): Promise<{ userInfo: UserInfo; userScore: UserScore }> {
@@ -54,20 +54,20 @@ export async function createUserService(
  * Logs in a user by verifying the username and password. Returns user information if successful, otherwise throws an error.
  */
 export async function loginUserService(
-  db: SQLite.SQLiteDatabase,
+  db: SQLiteDatabase,
   username: string,
   password: string
 ): Promise<{ userInfo: UserInfo; userScore: UserScore }> {
-  console.log("Logging in user:", username);
   const user = await loginUserRepository(db, username);
-  console.log("User found:", user);
+
   const isVerified = await isPasswordValid(password, user.hashedPassword);
 
   if (!isVerified) {
     throw new UserError("Neplatné heslo!");
   }
 
+  console.log(user.userInfo);
   const userScore = await getUserScoreRepository(db, user.userInfo.id);
-
+  console.log("User score retrieved:", userScore);
   return { userInfo: user.userInfo, userScore };
 }
