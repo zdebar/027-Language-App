@@ -48,7 +48,7 @@ export default function LoginScreen() {
       setUserInfo(userInfo);
       setUserScore(userScore);
       setErrorMessage(null);
-      router.push("/");
+      router.replace("/");
     } catch (error: unknown) {
       if (error instanceof UserError) {
         setErrorMessage(error.message);

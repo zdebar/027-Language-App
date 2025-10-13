@@ -49,7 +49,7 @@ function UserDependentStack() {
     >
       <ThemedView style={LayoutStyling.card}>
         <Stack>
-          <Stack.Screen name="(tabs)" />
+          <Stack.Screen name="(tabs)" options={{ title: "home" }} />
           <Stack.Protected guard={!userInfo}>
             <Stack.Screen name="login" />
             <Stack.Screen name="register" />

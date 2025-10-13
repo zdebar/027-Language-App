@@ -18,5 +18,7 @@ export default function ListUsersButton() {
     console.log("Users list:", result);
   };
 
-  return <ThemedButton text="List Users" onPress={handleListUsers} />;
+  return (
+    <ThemedButton text="Console log all users" onPress={handleListUsers} />
+  );
 }

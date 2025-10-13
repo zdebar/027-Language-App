@@ -52,7 +52,7 @@ export default function RegisterScreen() {
       setErrorMessage(null);
       setUserInfo(userInfo);
       setUserScore(userScore);
-      router.push("/");
+      router.replace("/");
     } catch (error: unknown) {
       if (error instanceof UserError) {
         setErrorMessage(error.message);
