@@ -28,7 +28,6 @@ export default function RegisterScreen() {
     const initializeDb = async () => {
       try {
         const database = await SQLite.openDatabaseAsync("language-app.db");
-        console.log("✅ Database initialized successfully");
         const result = await database.getFirstAsync<{
           id: number;
           uid: string;

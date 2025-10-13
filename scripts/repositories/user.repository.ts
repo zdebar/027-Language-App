@@ -38,13 +38,14 @@ export async function loginUserRepository(
 ): Promise<{ userInfo: UserInfo; hashedPassword: string }> {
   console.log("Querying user by username:", username);
 
-  const result = await db.getFirstAsync<{
-    id: number;
-    uid: string;
-    username: string;
-    password: string;
-  }>(
-    `
+  try {
+    const result = await db.getFirstAsync<{
+      id: number;
+      uid: string;
+      username: string;
+      password: string;
+    }>(
+      `
     SELECT 
       id,
       uid,
@@ -53,23 +54,25 @@ export async function loginUserRepository(
     FROM users u
     WHERE u.username = $1;
     `,
-    [username]
-  );
-
-  console.log("Query result:", result);
-
-  if (!result) {
-    throw new UserError(`Uživatel "${username}" neexistuje.`);
+      [username]
+    );
+    if (!result) {
+      throw new UserError(`Uživatel "${username}" neexistuje.`);
+    }
+    return {
+      userInfo: {
+        id: result.id,
+        uid: result.uid,
+        username: result.username,
+      },
+      hashedPassword: result.password,
+    };
+  } catch (error) {
+    console.log("Database query error:", error);
+    throw error instanceof UserError
+      ? error
+      : new Error("Failed to login user.");
   }
-
-  return {
-    userInfo: {
-      id: result.id,
-      uid: result.uid,
-      username: result.username,
-    },
-    hashedPassword: result.password,
-  };
 }
 
 /**

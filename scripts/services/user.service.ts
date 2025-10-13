@@ -2,6 +2,7 @@ import { isPasswordValid } from "@/scripts/utils/crypto.utils";
 import { UserError, UserInfo, UserScore } from "@/types/data.types";
 import * as Crypto from "expo-crypto";
 import * as SQLite from "expo-sqlite";
+import "react-native-get-random-values";
 import { v4 as uuidv4 } from "uuid";
 
 import {

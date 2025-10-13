@@ -14,7 +14,6 @@ Development and user testing of the web version provided insights into what work
    Drill as many practice attempts as possible within a given time. This is best achieved with flashcards and a continuous sequence of items without interruptions.
 2. **Alternating Practice in Both Directions**  
    Listening and speaking are the most important parts of language learning. Flashcards alternate between two directions:
-
    - Listening to English and translating to Czech.
    - Reading Czech and translating to English.
 
@@ -22,7 +21,6 @@ Development and user testing of the web version provided insights into what work
    With dense practice repetition, each item is repeated at least five times on the first day.
 
 4. **User Feedback**
-
    - **Daily Practice Count:** Encourages users to start practicing. The recommended minimum is 400 items or approximately 20 minutes.
    - **Progression Levels:** Items are organized into levels of 100 items to provide granular progress feedback.
 
@@ -78,3 +76,6 @@ Format: `<type>: <description>`
 - **perf**: Performance optimizations
 - **ios**: iOS-specific changes
 - **android**: Android-specific changes
+
+package.json
+react-native-get-random-values // necessary for uuid on android

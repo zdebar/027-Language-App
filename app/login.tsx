@@ -26,7 +26,9 @@ export default function LoginScreen() {
     };
 
     initializeDb();
+  }, []);
 
+  useEffect(() => {
     return () => {
       if (db) {
         db.closeAsync().catch((error) =>
@@ -34,7 +36,7 @@ export default function LoginScreen() {
         );
       }
     };
-  }, []);
+  }, [db]);
 
   const {
     control,
@@ -54,6 +56,7 @@ export default function LoginScreen() {
     }
 
     try {
+      console.log("Attempting login with", data);
       const {
         userInfo,
         userScore,
@@ -62,6 +65,7 @@ export default function LoginScreen() {
         data.username,
         data.password
       );
+      console.log("Login successful:", userInfo, userScore);
       setUserInfo(userInfo);
       setUserScore(userScore);
       setErrorMessage(null);
