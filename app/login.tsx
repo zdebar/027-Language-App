@@ -32,7 +32,7 @@ export default function LoginScreen() {
 
   const onSubmit = async (data: { username: string; password: string }) => {
     if (!db) {
-      console.error("Database not found");
+      console.log("Database not found");
       return;
     }
 
@@ -45,7 +45,6 @@ export default function LoginScreen() {
         data.username,
         data.password
       );
-      console.log("Login screen:", userInfo, userScore);
       setUserInfo(userInfo);
       setUserScore(userScore);
       setErrorMessage(null);
@@ -54,7 +53,7 @@ export default function LoginScreen() {
       if (error instanceof UserError) {
         setErrorMessage(error.message);
       } else {
-        console.error("An unexpected error occurred", error);
+        console.log("An unexpected error occurred", error);
       }
     }
   };

@@ -83,30 +83,33 @@ export async function getUserScoreRepository(
     `
     SELECT 
       -- Count of items learned today
-      (SELECT COUNT(*) 
-      FROM user_items 
-      WHERE user_id = $1 
-        AND DATE(learned_at) = DATE('now', 'localtime')) AS learnedCountToday,
-
+      COALESCE(
+        (SELECT COUNT(*) 
+        FROM user_items 
+        WHERE user_id = $1 
+          AND DATE(learned_at) = DATE('now', 'localtime')), 
+        0
+      ) AS learnedCountToday,
       -- Count of items learned before today
-      (SELECT COUNT(*) 
-      FROM user_items 
-      WHERE user_id = $1 
-        AND learned_at IS NOT NULL 
-        AND DATE(learned_at) < DATE('now', 'localtime')) AS learnedCountNotToday,
-
+      COALESCE(
+        (SELECT COUNT(*) 
+        FROM user_items 
+        WHERE user_id = $1 
+          AND learned_at IS NOT NULL 
+          AND DATE(learned_at) < DATE('now', 'localtime')), 
+        0
+      ) AS learnedCountNotToday,
       -- Practice count for today from user_score
-      (SELECT item_count 
-      FROM user_score 
-      WHERE user_id = $1 
-        AND "date" = DATE('now', 'localtime')) AS practiceCountToday
-    FROM user_items ui
-    WHERE ui.user_id = $1;
+      COALESCE(
+        (SELECT item_count 
+        FROM user_score 
+        WHERE user_id = $1 
+          AND "date" = DATE('now', 'localtime')), 
+        0
+      ) AS practiceCountToday;
     `,
     [userId]
   );
-
-  console.log("User score query result:", result);
 
   if (!result) {
     throw new Error(`User with ID ${userId} not found.`);

@@ -66,8 +66,7 @@ export async function loginUserService(
     throw new UserError("Neplatné heslo!");
   }
 
-  console.log(user.userInfo);
   const userScore = await getUserScoreRepository(db, user.userInfo.id);
-  console.log("User score retrieved:", userScore);
+
   return { userInfo: user.userInfo, userScore };
 }
