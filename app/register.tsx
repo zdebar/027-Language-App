@@ -35,11 +35,6 @@ export default function RegisterScreen() {
   });
 
   const onSubmit = async (data: { username: string; password: string }) => {
-    if (!db) {
-      console.log("Database not found");
-      return;
-    }
-
     try {
       const {
         userInfo,

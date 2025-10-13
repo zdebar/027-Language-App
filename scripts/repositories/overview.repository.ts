@@ -107,7 +107,7 @@ export async function resetUserRepository(
     `
     UPDATE user_items
     SET progress = 0
-    WHERE user_id = (SELECT id FROM users WHERE uid = $1);
+    WHERE user_id = $1;
     `,
     [userId]
   );
