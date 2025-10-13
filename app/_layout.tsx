@@ -1,3 +1,5 @@
+import { ThemedView } from "@/components/themed-view";
+import { LayoutStyling } from "@/constants/theme";
 import { UserProvider } from "@/context/user-provider";
 import { useColorScheme } from "@/hooks/use-color-scheme";
 import { useUser } from "@/hooks/user-user";
@@ -9,7 +11,6 @@ import {
 import { Stack } from "expo-router";
 import { SQLiteProvider } from "expo-sqlite";
 import { StatusBar } from "expo-status-bar";
-import "react-native-reanimated";
 
 export const unstable_settings = {
   anchor: "(tabs)",
@@ -39,12 +40,22 @@ function UserDependentStack() {
   const { userInfo } = useUser();
 
   return (
-    <Stack>
-      <Stack.Screen name="(tabs)" />
-      <Stack.Protected guard={!userInfo}>
-        <Stack.Screen name="login" />
-        <Stack.Screen name="register" />
-      </Stack.Protected>
-    </Stack>
+    <ThemedView
+      style={{
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <ThemedView style={LayoutStyling.card}>
+        <Stack>
+          <Stack.Screen name="(tabs)" />
+          <Stack.Protected guard={!userInfo}>
+            <Stack.Screen name="login" />
+            <Stack.Screen name="register" />
+          </Stack.Protected>
+        </Stack>
+      </ThemedView>
+    </ThemedView>
   );
 }

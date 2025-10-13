@@ -55,6 +55,11 @@ export const Fonts = Platform.select({
 });
 
 export const LayoutStyling = StyleSheet.create({
+  card: {
+    flex: 1,
+    maxWidth: 320,
+    width: "100%", // Ensures it stretches to the parent container's width
+  },
   top: {
     flex: 1,
     alignItems: "center",
@@ -67,14 +72,14 @@ export const LayoutStyling = StyleSheet.create({
     gap: 5,
   },
   button: {
-    width: 320,
+    width: "100%",
     height: 40,
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 5,
   },
   input: {
-    width: 320,
+    width: "100%",
     height: 40,
     borderWidth: 1,
     borderColor: "white",

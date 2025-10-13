@@ -1,5 +1,7 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet } from "react-native";
+import { ThemedText } from "../themed-text";
+import { ThemedView } from "../themed-view";
 
 export function TableLine({
   label,
@@ -9,24 +11,18 @@ export function TableLine({
   value: string | number;
 }) {
   return (
-    <View style={styles.row}>
-      <Text style={styles.cellLabel}>{label}</Text>
-      <Text style={styles.cellValue}>{value}</Text>
-    </View>
+    <ThemedView style={styles.row}>
+      <ThemedText>{label}</ThemedText>
+      <ThemedText>{value}</ThemedText>
+    </ThemedView>
   );
 }
 
 const styles = StyleSheet.create({
   row: {
     flexDirection: "row",
-    paddingVertical: 8,
-  },
-  cellLabel: {
-    flex: 3,
-    fontSize: 16,
-  },
-  cellValue: {
-    flex: 7,
-    fontSize: 16,
+    justifyContent: "space-between",
+    paddingVertical: 0,
+    width: "100%",
   },
 });

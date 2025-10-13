@@ -1,14 +1,13 @@
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
-import { TableLine } from "@/components/ui/table-line";
 import { ThemedButton } from "@/components/ui/themed-button";
+import { UserDashboard } from "@/components/user-dashboard";
 import { LayoutStyling } from "@/constants/theme";
 import { useUser } from "@/hooks/user-user";
 import { useRouter } from "expo-router";
-import { Text, View } from "react-native";
 
 export default function HomeScreen() {
-  const { userInfo, userScore } = useUser();
+  const { userInfo } = useUser();
   const router = useRouter();
 
   const handleLogin = () => {
@@ -22,28 +21,9 @@ export default function HomeScreen() {
   return (
     <ThemedView style={LayoutStyling.top}>
       <ThemedText type="title">Angličtina App</ThemedText>
-      <View
-        style={{ height: 40, width: 320, borderColor: "white", borderWidth: 1 }}
-      >
-        <Text>Test</Text>
-      </View>
+      <UserDashboard />
       {userInfo ? (
-        <>
-          <ThemedText>Welcome, {userInfo.username}!</ThemedText>
-          <TableLine label="id" value={userInfo.id} />
-          <TableLine
-            label="learned today"
-            value={String(userScore?.learnedCountToday)}
-          />
-          <TableLine
-            label="learned not today"
-            value={String(userScore?.learnedCountNotToday)}
-          />
-          <TableLine
-            label="practiced today"
-            value={String(userScore?.practiceCountToday)}
-          />
-        </>
+        <ThemedText>Welcome, {userInfo.username}!</ThemedText>
       ) : (
         <>
           <ThemedButton text="Login" onPress={handleLogin} />
