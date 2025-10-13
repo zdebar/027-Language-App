@@ -7,6 +7,10 @@ import { Platform, StyleSheet } from "react-native";
 
 const tintColorLight = "#0a7ea4";
 const tintColorDark = "#0a7ea4";
+const gapSize = 5;
+const borderRadius = 0;
+const buttonHeight = 50;
+
 export const Colors = {
   light: {
     text: "#11181C",
@@ -57,7 +61,7 @@ export const Fonts = Platform.select({
 export const LayoutStyling = StyleSheet.create({
   card: {
     flex: 1,
-    maxWidth: 320,
+    maxWidth: 330,
     width: "100%", // Ensures it stretches to the parent container's width
   },
   top: {
@@ -66,27 +70,37 @@ export const LayoutStyling = StyleSheet.create({
     alignItems: "center",
     justifyContent: "flex-start",
     flexDirection: "column",
-    gap: 5,
+    gap: gapSize,
   },
   center: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    gap: 5,
+    gap: gapSize,
   },
   button: {
+    flex: 1,
     width: "100%",
-    height: 40,
+    minHeight: buttonHeight,
+    maxHeight: buttonHeight,
     justifyContent: "center",
     alignItems: "center",
-    borderRadius: 5,
+    borderRadius: borderRadius,
+  },
+  buttonRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: 5,
+  },
+  disabled: {
+    opacity: 0.5,
   },
   input: {
     width: "100%",
-    height: 40,
+    height: buttonHeight,
     borderWidth: 1,
     borderColor: "white",
-    borderRadius: 5,
+    borderRadius: borderRadius,
   },
 });
 
