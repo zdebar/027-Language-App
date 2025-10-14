@@ -30,8 +30,8 @@ export default function ModalComponent({
             <ThemedText type="default" style={{ textAlign: "center" }}>
               {text}
             </ThemedText>
-            <ThemedButton text="Confirm" onPress={onConfirm} />
-            <ThemedButton text="Cancel" onPress={onCancel} />
+            <ThemedButton text="Ano" onPress={onConfirm} />
+            <ThemedButton text="Zpět" onPress={onCancel} />
           </ThemedView>
         </ThemedView>
       </ThemedView>

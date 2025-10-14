@@ -25,7 +25,7 @@ export default function RootLayout() {
         <SQLiteProvider
           databaseName="language-app.db"
           assetSource={{
-            assetId: require("@/assets/database/language-app.db"),
+            assetId: require("@/assets/database/language-app-3.db"),
           }}
         >
           <UserDependentStack />
