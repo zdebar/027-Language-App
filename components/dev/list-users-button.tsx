@@ -1,6 +1,6 @@
 import { useSQLiteContext } from "expo-sqlite";
 import React from "react";
-import { ThemedButton } from "./ui/themed-button";
+import { ThemedButton } from "../ui/themed-button";
 
 export default function ListUsersButton() {
   const db = useSQLiteContext();

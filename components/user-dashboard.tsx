@@ -9,15 +9,15 @@ export function UserDashboard() {
     <>
       <TableLine
         label="learned today"
-        value={String(userScore?.learnedCountToday ?? 0)}
+        value={String(userScore?.learnedCountToday)}
       />
       <TableLine
         label="learned not today"
-        value={String(userScore?.learnedCountNotToday ?? 0)}
+        value={String(userScore?.learnedCountNotToday)}
       />
       <TableLine
         label="practiced today"
-        value={String(userScore?.practiceCountToday ?? 0)}
+        value={String(userScore?.practiceCountToday)}
       />
     </>
   );

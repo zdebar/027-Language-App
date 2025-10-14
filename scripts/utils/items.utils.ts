@@ -5,7 +5,7 @@ import { PracticeItem } from "@/types/data.types";
  * Returns the next review date based on the progress and SRS intervals.
  */
 export function getNextAt(progress: number): string | null {
-  const interval = practiceConstants.SRS[progress];
+  const interval = practiceConstants.SRS[progress]; // what if out of bounds
   if (interval === undefined) return null;
 
   const randomFactor =

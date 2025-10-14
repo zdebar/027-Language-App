@@ -1,9 +1,8 @@
 import practiceConstants from "@/constants/practice";
-import { Grammar, PracticeItem, UserScore } from "@/types/data.types";
+import { PracticeItem, UserScore } from "@/types/data.types";
 import { SQLiteDatabase } from "expo-sqlite";
 
 import {
-  getGrammarRepository,
   getPracticeItemRepository,
   updateUserItemRepository,
 } from "@/scripts/repositories/practice.repository";
@@ -20,13 +19,10 @@ import {
 export async function getPracticeItemService(
   db: SQLiteDatabase,
   userId: number
-): Promise<PracticeItem | null> {
-  const item: PracticeItem | null = await getPracticeItemRepository(db, userId);
+): Promise<PracticeItem> {
+  const item: PracticeItem = await getPracticeItemRepository(db, userId);
 
-  if (item) {
-    item.audio = addOpusSuffix(item.audio);
-  }
-
+  item.audio = addOpusSuffix(item.audio);
   return item;
 }
 
@@ -36,27 +32,19 @@ export async function getPracticeItemService(
 export async function updateUserItemService(
   db: SQLiteDatabase,
   userId: number,
-  item: PracticeItem
+  itemId: number,
+  progress: number
 ): Promise<UserScore> {
   await updateUserItemRepository(
     db,
     userId,
-    item.id,
-    item.progress,
-    getNextAt(item.progress),
-    getThresholdDate(item.progress, practiceConstants.learnedProgress),
-    getThresholdDate(item.progress, practiceConstants.SRS.length)
+    itemId,
+    progress,
+    getNextAt(progress),
+    new Date().toISOString(),
+    getThresholdDate(progress, practiceConstants.learnedProgress),
+    getThresholdDate(progress, practiceConstants.SRS.length)
   );
 
   return await getUserScoreRepository(db, userId);
-}
-
-/**
- * Gets grammar for given item_id.
- */
-export async function getGrammarService(
-  db: SQLiteDatabase,
-  itemId: number
-): Promise<Grammar> {
-  return await getGrammarRepository(db, itemId);
 }
