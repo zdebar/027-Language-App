@@ -1,9 +1,9 @@
+import Grammar from "@/components/grammar";
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { ThemedButtonIcon } from "@/components/ui/themed-button-icon";
 import { LayoutStyling } from "@/constants/theme";
 import { useUser } from "@/hooks/use-user";
-import { useAudioPlayer } from "expo-audio";
 import { View } from "react-native";
 
 import { ThemedPressable } from "@/components/ui/themed-pressable";
@@ -17,7 +17,7 @@ import { useSQLiteContext } from "expo-sqlite";
 import { useCallback, useEffect, useState } from "react";
 
 export default function PracticeScreen() {
-  const { userScore, userInfo } = useUser();
+  const { userScore, userInfo, setUserScore } = useUser();
   const db = useSQLiteContext();
 
   const [revealed, setRevealed] = useState(false);
@@ -28,9 +28,6 @@ export default function PracticeScreen() {
 
   const direction = isCzechToEnglish(item?.progress ?? 0);
   const audioPlayable = Boolean(item?.audio && (revealed || !direction));
-
-  const [audioSource, setAudioSource] = useState<string | null>(null);
-  const player = useAudioPlayer(audioSource);
 
   const fetchPracticeItem = useCallback(async () => {
     try {
@@ -53,28 +50,6 @@ export default function PracticeScreen() {
     fetchPracticeItem();
   }, [fetchPracticeItem]);
 
-  useEffect(() => {
-    const loadAudio = () => {
-      if (item?.audio) {
-        try {
-          // eslint-disable-next-line @typescript-eslint/no-require-imports
-          const audioPath = require(`@/assets/audio/${item.audio}`);
-          setAudioSource(audioPath);
-          setError(null);
-        } catch (error) {
-          console.error("Error loading audio:", error);
-          setAudioSource(null);
-          setError("Audio soubor není dostupný.");
-        }
-      } else {
-        setAudioSource(null);
-        setError("Audio soubor není dostupný.");
-      }
-    };
-
-    loadAudio();
-  }, [item]);
-
   const updateProgress = useCallback(
     async (progressChange: number) => {
       if (!userInfo?.id || !item) return; // TODO toto vy vůbec nemělo nastat
@@ -85,10 +60,11 @@ export default function PracticeScreen() {
         Math.max(0, item.progress + progressChange)
       );
       console.log("Updated user score:", updatedScore); // TODO remove log
+      setUserScore(updatedScore);
 
       await fetchPracticeItem();
     },
-    [db, item, userInfo?.id, fetchPracticeItem]
+    [db, item, userInfo?.id, fetchPracticeItem, setUserScore]
   );
 
   return (
@@ -98,22 +74,24 @@ export default function PracticeScreen() {
         gap: 5,
       }}
     >
+      <Grammar
+        visible={grammarVisible}
+        db={db}
+        grammarId={item?.grammarId || null}
+        onConfirm={() => setGrammarVisible(false)}
+      />
       {/* Card*/}
       <ThemedPressable
         style={{
           height: 240,
           justifyContent: "space-between",
           padding: 10,
-          backgroundColor: audioPlayable ? "gray" : undefined,
+          backgroundColor: revealed || !direction ? "gray" : undefined,
         }}
-        onPress={() => {
-          if (audioPlayable) {
-            player.play();
-          }
-        }}
+        onPress={() => {}}
       >
         {/* Top card bar*/}
-        <View>{error}</View>
+        <ThemedText>{error}</ThemedText>
 
         {/* Item czech, pronunciation, english*/}
         <View
@@ -171,6 +149,7 @@ export default function PracticeScreen() {
           <ThemedButtonIcon // Hint
             iconName="lightbulb-outline"
             onPress={() => setHintIndex((prevIndex) => prevIndex + 1)}
+            disabled={hintIndex >= (item?.english.length || 0)}
           />
           <ThemedButtonIcon // Reveal
             iconName="remove-red-eye"

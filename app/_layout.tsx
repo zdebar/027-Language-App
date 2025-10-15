@@ -23,9 +23,9 @@ export default function RootLayout() {
     <UserProvider>
       <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
         <SQLiteProvider
-          databaseName="language-app.db"
+          databaseName="language-app-4.db"
           assetSource={{
-            assetId: require("@/assets/database/language-app-3.db"),
+            assetId: require("@/assets/database/language-app-4.db"),
           }}
         >
           <UserDependentStack />
