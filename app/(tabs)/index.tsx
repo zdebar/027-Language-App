@@ -7,7 +7,7 @@ import { useUser } from "@/hooks/use-user";
 import { useRouter } from "expo-router";
 
 export default function HomeScreen() {
-  const { userInfo } = useUser();
+  const { userInfo, userScore } = useUser();
   const router = useRouter();
 
   const handleLogin = () => {
@@ -21,7 +21,7 @@ export default function HomeScreen() {
   return (
     <ThemedView style={LayoutStyling.top}>
       <ThemedText type="title">Angličtina App</ThemedText>
-      <UserDashboard />
+      <UserDashboard user={userScore} />
       {userInfo ? (
         <ThemedText>Welcome, {userInfo.username}!</ThemedText>
       ) : (

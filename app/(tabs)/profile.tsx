@@ -7,14 +7,16 @@ import { LayoutStyling } from "@/constants/theme";
 import { useUser } from "@/hooks/use-user";
 import { resetUserService } from "@/scripts/services/overview.service";
 import { UserError, UserScore } from "@/types/data.types";
+import { useRouter } from "expo-router";
 import { useSQLiteContext } from "expo-sqlite";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function ProfileScreen() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
   const { userInfo, setUserScore } = useUser();
   const db = useSQLiteContext();
+  const router = useRouter();
 
   const handleItemsOverview = async () => {
     // link to items overview screen
@@ -38,6 +40,12 @@ export default function ProfileScreen() {
       }
     }
   };
+
+  useEffect(() => {
+    if (!userInfo || !userInfo.id) {
+      router.replace("/");
+    }
+  }, [userInfo, router]);
 
   return (
     <ThemedView style={LayoutStyling.top}>

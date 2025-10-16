@@ -21,7 +21,6 @@ export async function getPracticeItemService(
   userId: number
 ): Promise<PracticeItem> {
   const item: PracticeItem = await getPracticeItemRepository(db, userId);
-  console.log("Item", item);
   item.audio = addOpusSuffix(item.audio);
   return item;
 }

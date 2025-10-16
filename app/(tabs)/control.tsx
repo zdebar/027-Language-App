@@ -1,4 +1,7 @@
+import ListBlocksButton from "@/components/dev/list-blocks-button";
+import ListGrammarButton from "@/components/dev/list-grammar-button";
 import ListItemsButton from "@/components/dev/list-items-button";
+import ListTriggersButton from "@/components/dev/list-triggers";
 import ListUserItemsButton from "@/components/dev/list-user-items.button";
 import ListUserScoreButton from "@/components/dev/list-user-score-button";
 import ListUsersButton from "@/components/dev/list-users-button";
@@ -12,6 +15,9 @@ export default function HomeScreen() {
       <ListItemsButton />
       <ListUserItemsButton />
       <ListUserScoreButton />
+      <ListBlocksButton />
+      <ListGrammarButton />
+      <ListTriggersButton />
     </ThemedView>
   );
 }

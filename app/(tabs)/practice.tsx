@@ -14,12 +14,14 @@ import {
 } from "@/scripts/services/practice.sevice";
 import { isCzechToEnglish } from "@/scripts/utils/practice.utils";
 import { PracticeItem, UserError } from "@/types/data.types";
+import { useRouter } from "expo-router";
 import { useSQLiteContext } from "expo-sqlite";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 export default function PracticeScreen() {
   const { userScore, userInfo, setUserScore } = useUser();
   const db = useSQLiteContext();
+  const router = useRouter();
 
   const [revealed, setRevealed] = useState(false);
   const [item, setItem] = useState<PracticeItem | null>(null);
@@ -33,7 +35,7 @@ export default function PracticeScreen() {
 
   const fetchPracticeItem = useCallback(async () => {
     try {
-      if (!userInfo?.id) return; // TODO toto vy vůbec nemělo nastat
+      if (!userInfo?.id) return;
       const item = await getPracticeItemService(db, userInfo.id);
       setItem(item);
       setRevealed(false);
@@ -52,7 +54,7 @@ export default function PracticeScreen() {
 
   const updateProgress = useCallback(
     async (progressChange: number) => {
-      if (!userInfo?.id || !item) return; // TODO toto vy vůbec nemělo nastat
+      if (!userInfo?.id || !item) return;
       const updatedScore = await updateUserItemService(
         db,
         userInfo.id,
@@ -67,13 +69,12 @@ export default function PracticeScreen() {
     [db, item, userInfo?.id, fetchPracticeItem, setUserScore]
   );
 
-  // useEffect(() => {
-  //   if (!userInfo) {
-  //     // Redirect to the home page if userInfo is not loaded
-  //     navigation.replace("Home"); // Replace ensures the user cannot go back to this page
-  //   }
-  //   fetchPracticeItem();
-  // }, [fetchPracticeItem]);
+  useEffect(() => {
+    if (!userInfo || !userInfo.id) {
+      router.replace("/");
+    }
+    fetchPracticeItem();
+  }, [fetchPracticeItem, userInfo, router]);
 
   return (
     <ThemedView

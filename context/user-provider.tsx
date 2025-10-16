@@ -6,6 +6,7 @@ import { ReactNode, useEffect, useState } from "react";
 export function UserProvider({ children }: { children: ReactNode }) {
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
   const [userScore, setUserScore] = useState<UserScore | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Load user data from AsyncStorage when the app starts
   useEffect(() => {
@@ -18,6 +19,8 @@ export function UserProvider({ children }: { children: ReactNode }) {
         if (storedUserScore) setUserScore(JSON.parse(storedUserScore));
       } catch (error) {
         console.error("Failed to load user data from AsyncStorage:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -26,6 +29,8 @@ export function UserProvider({ children }: { children: ReactNode }) {
 
   // Save userInfo to AsyncStorage whenever it changes
   useEffect(() => {
+    if (isLoading) return; // Wait until loading is complete
+
     const saveUserInfo = async () => {
       try {
         if (userInfo) {
@@ -39,10 +44,12 @@ export function UserProvider({ children }: { children: ReactNode }) {
     };
 
     saveUserInfo();
-  }, [userInfo]);
+  }, [userInfo, isLoading]);
 
   // Save userScore to AsyncStorage whenever it changes
   useEffect(() => {
+    if (isLoading) return; // Wait until loading is complete
+
     const saveUserScore = async () => {
       try {
         if (userScore) {
@@ -56,7 +63,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
     };
 
     saveUserScore();
-  }, [userScore]);
+  }, [userScore, isLoading]);
 
   return (
     <UserContext.Provider
