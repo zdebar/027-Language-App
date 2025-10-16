@@ -10,7 +10,7 @@ export default function LogoutButton() {
   const handleLogout = () => {
     setUserInfo(null);
     setUserScore(null);
-    router.push("/");
+    router.replace("/");
   };
   return <ThemedButton text="Logout" onPress={handleLogout} />;
 }

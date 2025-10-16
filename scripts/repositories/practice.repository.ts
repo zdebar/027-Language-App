@@ -27,7 +27,7 @@ export async function getPracticeItemRepository(
       LEFT JOIN blocks b ON i.block_id = b.id
       LEFT JOIN grammar g ON b.grammar_id = g.id
       WHERE ui.mastered_at IS NULL 
-        AND (ui.next_at IS NULL OR ui.next_at < datetime('now'))
+        AND (ui.next_at IS NULL OR ui.next_at < datetime('now', 'localtime'))
       ORDER BY 
         ui.progress % 2 DESC,
         ui.next_at ASC NULLS LAST,

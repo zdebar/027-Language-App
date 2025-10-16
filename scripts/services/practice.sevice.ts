@@ -10,6 +10,7 @@ import { getUserScoreRepository } from "@/scripts/repositories/user.repository";
 import {
   addOpusSuffix,
   getNextAt,
+  getNowDate,
   getThresholdDate,
 } from "@/scripts/utils/items.utils";
 
@@ -40,7 +41,7 @@ export async function updateUserItemService(
     itemId,
     progress,
     getNextAt(progress),
-    new Date().toISOString(),
+    getNowDate(),
     getThresholdDate(progress, practiceConstants.learnedProgress),
     getThresholdDate(progress, practiceConstants.SRS.length)
   );

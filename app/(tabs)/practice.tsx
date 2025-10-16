@@ -111,7 +111,11 @@ export default function PracticeScreen() {
           }}
         >
           <ThemedText>
-            {direction || revealed ? item?.czech : "\u00A0"}
+            {direction || revealed
+              ? item?.czech
+              : item?.czech
+                  .slice(0, hintIndex ?? item?.czech.length)
+                  .padEnd(item?.czech.length, "\u00A0")}
           </ThemedText>
           <ThemedText>
             {revealed ? item?.pronunciation || "\u00A0" : "\u00A0"}

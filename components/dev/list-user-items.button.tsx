@@ -23,6 +23,7 @@ export default function ListUserItemsButton() {
       `,
         [userInfo.id]
       );
+      console.log("userInfo.id", userInfo.id);
       console.log("User_items list:", result);
     } catch (error) {
       console.error("Error fetching user_items:", error);

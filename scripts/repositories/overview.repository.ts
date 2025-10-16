@@ -75,7 +75,11 @@ export async function resetItemRepository(
     await db.runAsync(
       `
       UPDATE user_items
-      SET progress = 0
+      SET progress = 0,
+        updated_at = NULL,
+        next_at = NULL,
+        learned_at = NULL,
+        mastered_at = NULL
       WHERE user_id = $1
         AND item_id = $2;
       `,
@@ -98,7 +102,11 @@ export async function resetGrammarItemsRepository(
     await db.runAsync(
       `
       UPDATE user_items
-      SET progress = 0
+      SET progress = 0,
+        updated_at = NULL,
+        next_at = NULL,
+        learned_at = NULL,
+        mastered_at = NULL
       WHERE user_id = $1
         AND EXISTS (
           SELECT 1
@@ -126,7 +134,11 @@ export async function resetUserRepository(
     await db.runAsync(
       `
       UPDATE user_items
-      SET progress = 0
+      SET progress = 0,
+        updated_at = NULL,
+        next_at = NULL,
+        learned_at = NULL,
+        mastered_at = NULL
       WHERE user_id = $1;
       `,
       [userId]
