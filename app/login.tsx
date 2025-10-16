@@ -7,7 +7,7 @@ import { useUser } from "@/hooks/use-user";
 import { loginUserService } from "@/scripts/services/user.service";
 import { UserError, UserInfo, UserScore } from "@/types/data.types";
 import { Ionicons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import { useSQLiteContext } from "expo-sqlite";
 import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -115,9 +115,11 @@ export default function LoginScreen() {
       )}
       <ThemedButton text="Login" onPress={handleSubmit(onSubmit)} />
 
-      <ThemedText type="link" onPress={handleRegister}>
-        Don&apos;t have an account? Register
-      </ThemedText>
+      <Link href="/register">
+        <ThemedText type="link">
+          Don&apos;t have an account? Register
+        </ThemedText>
+      </Link>
     </ThemedView>
   );
 }

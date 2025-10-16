@@ -4,6 +4,7 @@ import { ThemedView } from "@/components/themed-view";
 import { ThemedButtonIcon } from "@/components/ui/themed-button-icon";
 import { LayoutStyling } from "@/constants/theme";
 import { useUser } from "@/hooks/use-user";
+import { useAudioPlayer } from "expo-audio";
 import { View } from "react-native";
 
 import { ThemedPressable } from "@/components/ui/themed-pressable";
@@ -14,7 +15,7 @@ import {
 import { isCzechToEnglish } from "@/scripts/utils/practice.utils";
 import { PracticeItem, UserError } from "@/types/data.types";
 import { useSQLiteContext } from "expo-sqlite";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 
 export default function PracticeScreen() {
   const { userScore, userInfo, setUserScore } = useUser();
@@ -28,6 +29,7 @@ export default function PracticeScreen() {
 
   const direction = isCzechToEnglish(item?.progress ?? 0);
   const audioPlayable = Boolean(item?.audio && (revealed || !direction));
+  const player = useAudioPlayer();
 
   const fetchPracticeItem = useCallback(async () => {
     try {
@@ -42,13 +44,11 @@ export default function PracticeScreen() {
       console.error("Error in fetchPracticeItem:", error);
       if (error instanceof UserError) {
         setError(error.message);
+      } else {
+        setError("Neočekávaná chyba.");
       }
     }
   }, [db, userInfo?.id]);
-
-  useEffect(() => {
-    fetchPracticeItem();
-  }, [fetchPracticeItem]);
 
   const updateProgress = useCallback(
     async (progressChange: number) => {
@@ -66,6 +66,14 @@ export default function PracticeScreen() {
     },
     [db, item, userInfo?.id, fetchPracticeItem, setUserScore]
   );
+
+  // useEffect(() => {
+  //   if (!userInfo) {
+  //     // Redirect to the home page if userInfo is not loaded
+  //     navigation.replace("Home"); // Replace ensures the user cannot go back to this page
+  //   }
+  //   fetchPracticeItem();
+  // }, [fetchPracticeItem]);
 
   return (
     <ThemedView
